@@ -12,7 +12,7 @@ end
 
 # in this case starts in inbox,
 # mv'd to pending, processed, then mvd to archive
-Basket.new("orders") do |file|
+Basket.process("orders") do |file|
   log :processing, file
 end
 
@@ -21,7 +21,7 @@ end
 #  * pending
 #  * success
 #  * fail
-Basket.new("orders", :conditional => true) do |file|
+Basket.process("orders", :conditional => true) do |file|
   log :processing, file
   if file =~ /cat/
     log :success, file
@@ -38,7 +38,7 @@ end
 #   * good
 #   * bad
 #   * unknown
-Basket.new("orders", :inbox => "new", :pending => "work", :baskets => %w{good bad unknown}) do |file|
+Basket.process("orders", :inbox => "new", :pending => "work", :baskets => %w{good bad unknown}) do |file|
   log :processing, file
 
   if file =~ /cat/
@@ -55,7 +55,7 @@ Basket.new("orders", :inbox => "new", :pending => "work", :baskets => %w{good ba
 end
 
 # want to be able to process in parallel
-Basket.new("orders", :workers => 4) do |file|
+Basket.process("orders", :workers => 4) do |file|
   log $$, :processing, file
 end
 
