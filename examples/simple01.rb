@@ -38,7 +38,7 @@ end
 #   * good
 #   * bad
 #   * unknown
-Basket.process("orders", :inbox => "new", :pending => "work", :baskets => %w{good bad unknown}) do |file|
+Basket.process("orders", :inbox => "new", :pending => "work", :other_baskets => %w{good bad unknown}) do |file|
   log :processing, file
 
   if file =~ /cat/

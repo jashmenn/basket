@@ -23,12 +23,11 @@ module Basket
     INBOX   = "inbox"
     PENDING = "pending"
     ARCHIVE = "archive"
-    DEFAULT_BASKETS = [ INBOX, PENDING, ARCHIVE ]
 
     attr_accessor :root
     attr_accessor :inbox
     attr_accessor :pending
-    attr_accessor :baskets
+    attr_accessor :other
 
     include HasLogger
 
@@ -37,7 +36,7 @@ module Basket
       @inbox   = opts[:inbox]   || INBOX
       @pending = opts[:pending] || PENDING
       @archive = opts[:archive] || ARCHIVE
-      @baskets = opts[:baskets] || DEFAULT_BASKETS
+      @other   = opts[:other]   || []
       @logdev  = opts[:logdev]
     end
 
@@ -46,10 +45,14 @@ module Basket
 
     protected
     def create_directories
-      baskets.flatten.compact.each do |dir|
+      baskets.each do |dir|
         logger.debug([:creating, @root/dir])
         FileUtils.mkdir_p(@root/dir)
       end
+    end
+
+    def baskets
+      [@inbox, @pending, @archive, @other].flatten.compact
     end
 
   end
