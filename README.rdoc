@@ -15,6 +15,10 @@ Assuming there are number of files in <tt>orders/inbox</tt>
 
 See Basket#process for a list of all the options.
 
+= Install:
+
+  gem install jashmenn-basket --source http://gems.github.com
+
 = More examples:
 
 The output folder can be conditional based on the output of the block, as in
