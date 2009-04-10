@@ -15,7 +15,8 @@ module Basket
   end
   
   def self.process(input, opts={}, &block)
-
+    b = Base.new(input, opts)
+    b.process(&block)
   end
 
   class Base
@@ -30,24 +31,38 @@ module Basket
     attr_accessor :other
 
     include HasLogger
+    include FileUtils
 
     def initialize(root, opts={})
       @root = root
-      @inbox   = opts[:inbox]   || INBOX
-      @pending = opts[:pending] || PENDING
-      @archive = opts[:archive] || ARCHIVE
-      @other   = opts[:other]   || []
-      @logdev  = opts[:logdev]
+      @inbox   = opts.delete(:inbox)   || INBOX
+      @pending = opts.delete(:pending) || PENDING
+      @archive = opts.delete(:archive) || ARCHIVE
+      @other   = opts.delete(:other)   || []
+      @logdev  = opts.delete(:logdev)
+      @opts    = opts
     end
 
     def process(&block)
+      files = Dir[@root/@inbox/"*"]
+      logger.debug(["#{files.size} files in", @root/@inbox/"*"])
+      files.each do |file|
+        mv(file, @root/@pending)
+        result = block.call(file)
+        if @opts[:conditional]
+          puts "todo"
+        else
+          logger.info [:mv, @root/@pending/File.basename(file), @root/@archive]
+          mv(@root/@pending/File.basename(file), @root/@archive)
+        end
+      end
     end
 
     protected
     def create_directories
       baskets.each do |dir|
         logger.debug([:creating, @root/dir])
-        FileUtils.mkdir_p(@root/dir)
+        mkdir_p(@root/dir)
       end
     end
 

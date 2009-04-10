@@ -44,12 +44,15 @@ describe "Basket" do
 
   describe("basic usage") do
     it "should process files" do
-      # check and make sure files are in the inbox
+      r = FIXTURES_DIR/"orders"
+      Dir["#{r}/inbox/*"].size.should == 25 # check and make sure files are in the inbox
+
       Basket.process("orders") do |file|
         log :processing, file
       end
-      # check and make sure the files are not in the inbox
-      # make sure files are in archive
+
+      Dir["#{r}/inbox/*"  ].size.should == 0 
+      Dir["#{r}/archive/*"].size.should == 25
     end
   end
 
