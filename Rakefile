@@ -7,7 +7,7 @@ require 'rake/rdoctask'
 require 'lib/ext/core'
 
 GEM = "basket"
-GEM_VERSION = "0.0.1"
+GEM_VERSION = "0.0.2"
 AUTHOR = "Nate Murray"
 EMAIL = "nate@natemurray.com"
 HOMEPAGE = "http://www.xcombinator.com"
@@ -28,7 +28,7 @@ spec = Gem::Specification.new do |s|
   
   s.require_path = 'lib'
   s.autorequire = GEM
-  s.files = %w(README.rdoc Rakefile) + Dir.glob("{lib,spec,examples}/**/*")
+  s.files = %w(README.rdoc Rakefile) + Dir.glob("{lib,spec,examples}/**/*").reject{|f| f =~ /(spec\/fixtures)/}
 end
 
 task :default => :spec

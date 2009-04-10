@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{basket}
-  s.version = "0.0.1"
+  s.version = "0.0.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Nate Murray"]
@@ -11,7 +11,7 @@ Gem::Specification.new do |s|
   s.description = %q{Easily process and sort a directory of files.}
   s.email = %q{nate@natemurray.com}
   s.extra_rdoc_files = ["README.rdoc"]
-  s.files = ["README.rdoc", "Rakefile", "lib/basket.rb", "lib/ext", "lib/ext/core.rb", "lib/ext/metaid.rb", "lib/has_logger.rb", "spec/basket_spec.rb", "spec/fixtures", "spec/spec_helper.rb", "examples/01_simple.rb", "examples/02_conditional.rb", "examples/03_other_baskets.rb", "examples/04_parallel.rb"]
+  s.files = ["README.rdoc", "Rakefile", "lib/basket.rb", "lib/ext", "lib/ext/core.rb", "lib/ext/metaid.rb", "lib/has_logger.rb", "spec/basket_spec.rb", "spec/spec_helper.rb", "examples/01_simple.rb", "examples/02_conditional.rb", "examples/03_other_baskets.rb", "examples/04_parallel.rb"]
   s.has_rdoc = true
   s.homepage = %q{http://www.xcombinator.com}
   s.require_paths = ["lib"]
