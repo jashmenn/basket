@@ -1,3 +1,0 @@
-== basket
-
-A gem that provides...
