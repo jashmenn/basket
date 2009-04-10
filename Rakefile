@@ -8,10 +8,10 @@ require 'lib/ext/core'
 
 GEM = "basket"
 GEM_VERSION = "0.0.1"
-AUTHOR = "Your Name"
-EMAIL = "Your Email"
-HOMEPAGE = "http://example.com"
-SUMMARY = "A gem that provides..."
+AUTHOR = "Nate Murray"
+EMAIL = "nate@natemurray.com"
+HOMEPAGE = "http://www.xcombinator.com"
+SUMMARY = "Easily process and sort a directory of files."
 
 spec = Gem::Specification.new do |s|
   s.name = GEM
@@ -28,7 +28,7 @@ spec = Gem::Specification.new do |s|
   
   s.require_path = 'lib'
   s.autorequire = GEM
-  s.files = %w(README.rdoc Rakefile) + Dir.glob("{lib,spec,examples,vendor}/**/*")
+  s.files = %w(README.rdoc Rakefile) + Dir.glob("{lib,spec,examples}/**/*")
 end
 
 task :default => :spec
