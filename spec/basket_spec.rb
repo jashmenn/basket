@@ -1,5 +1,10 @@
 require File.dirname(__FILE__) + '/spec_helper'
 
+def log *args
+  return false # comment to log these tests to stdout
+  p args
+end
+
 describe "Basket" do
   include BasketFixtures
 
@@ -48,7 +53,7 @@ describe "Basket" do
       Dir["#{@root}/inbox/*"].size.should == 25 # check and make sure files are in the inbox
 
       Basket.process(@root, :logdev => "/dev/null") do |file|
-        p [:processing, file]
+        log :processing, file
       end
 
       Dir["#{@root}/inbox/*"  ].size.should == 0 
@@ -62,10 +67,10 @@ describe "Basket" do
 
       Basket.process(@root, :conditional => true, :logdev => "/dev/null") do |file, i|
         if i % 2 == 0
-          p [:success, file]
+          log :success, file
           true 
         else
-          p [:fail, file]
+          log :fail, file
           false
         end
       end
@@ -84,13 +89,13 @@ describe "Basket" do
       Basket.process(@root, :inbox => "new", :pending => "work", :other => %w{good bad unknown}) do |file, i|
         case i % 3 
         when 0 
-          p [:good, file]
+          log :good, file
           file.good!
         when 1
-          p [:bad, file]
+          log :bad, file
           file.bad!
         when 2
-          p [:unknown, file]
+          log :unknown, file
           file.unknown!
         end
       end

@@ -1,3 +1,4 @@
 spec/fixtures/orders
 .autosession.vim
 .session
+rdoc

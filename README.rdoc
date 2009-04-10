@@ -2,3 +2,5 @@ basket
 ======
 
 An easy way to batch process a folder of files, avoiding race conditions.
+
+  :include:examples/simple01.rb
