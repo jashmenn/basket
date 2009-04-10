@@ -5,6 +5,7 @@ describe "Basket" do
 
   before(:each) do
     create_fixture_files
+    @root = FIXTURES_DIR/"orders"
   end
 
   describe "Basket::Base" do 
@@ -42,17 +43,64 @@ describe "Basket" do
     end
   end
 
-  describe("basic usage") do
+  describe "basic usage"  do
     it "should process files" do
-      r = FIXTURES_DIR/"orders"
-      Dir["#{r}/inbox/*"].size.should == 25 # check and make sure files are in the inbox
+      pending
+      Dir["#{@root}/inbox/*"].size.should == 25 # check and make sure files are in the inbox
 
-      Basket.process("orders") do |file|
-        log :processing, file
+      Basket.process(@root) do |file|
+        p [:processing, file]
       end
 
-      Dir["#{r}/inbox/*"  ].size.should == 0 
-      Dir["#{r}/archive/*"].size.should == 25
+      Dir["#{@root}/inbox/*"  ].size.should == 0 
+      Dir["#{@root}/archive/*"].size.should == 25
+    end
+  end
+
+  describe "conditional usage" do
+    it "should process files" do
+      pending
+      Dir["#{@root}/inbox/*"].size.should == 25 # check and make sure files are in the inbox
+
+      Basket.process(@root, :conditional => true) do |file, i|
+        if i % 2 == 0
+          p [:success, file]
+          true 
+        else
+          p [:fail, file]
+          false
+        end
+      end
+
+      Dir["#{@root}/inbox/*"   ].size.should == 0 
+      Dir["#{@root}/success/*" ].size.should == 13 
+      Dir["#{@root}/fail/*"    ].size.should == 12 
+    end
+  end
+
+  describe "custom baskets" do
+    it "should process files" do
+      create_fixture_files("new")
+      Dir["#{@root}/new/*"].size.should == 25 # check and make sure files are in the inbox
+
+      Basket.process(@root, :inbox => "new", :pending => "work", :other => %w{good bad unknown}) do |file, i|
+        case i % 3 
+        when 0 
+          p [:good, file]
+          file.good!
+        when 1
+          p [:bad, file]
+          file.bad!
+        when 2
+          p [:unknown, file]
+          file.unknown!
+        end
+      end
+
+      Dir["#{@root}/new/*"   ].size.should == 0 
+      Dir["#{@root}/good/*"    ].size.should == 8 
+      Dir["#{@root}/bad/*"     ].size.should == 8 
+      Dir["#{@root}/unknown/*" ].size.should == 8 
     end
   end
 

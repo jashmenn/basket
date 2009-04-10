@@ -7,6 +7,7 @@ module Basket
   require 'fileutils'
   require 'pp'
   require 'ext/core'
+  require 'ext/metaid'
   require 'has_logger'
 
   class << self
@@ -33,6 +34,15 @@ module Basket
     include HasLogger
     include FileUtils
 
+    # Process a directory of files. Move them to a new location. 
+    #
+    # Options:
+    #  * :inbox
+    #  * :pending
+    #  * :archive
+    #  * :other
+    #  * :logdev
+    #  * :conditional
     def initialize(root, opts={})
       @root = root
       @inbox   = opts.delete(:inbox)   || INBOX
@@ -43,17 +53,31 @@ module Basket
       @opts    = opts
     end
 
+    # block arity
     def process(&block)
+      create_directories 
       files = Dir[@root/@inbox/"*"]
       logger.debug(["#{files.size} files in", @root/@inbox/"*"])
-      files.each do |file|
-        mv(file, @root/@pending)
-        result = block.call(file)
+      files.each_with_index do |file, i|
+        pending_file = @root/@pending/File.basename(file)
+
+        logger.info [:mv, file, pending_file]
+        mv file, pending_file
+
+        to_mix = mixin
+        pending_file.meta_eval { include to_mix }
+
+        result = block.arity > 1 ? block.call(pending_file, i) : block.call(pending_file)
+
         if @opts[:conditional]
-          puts "todo"
+          destination = result ? @root/"success" : @root/"fail"
+          logger.info [:mv, pending_file, destination]
+          mv pending_file, destination
+        elsif @opts[:other]
+          # don't mv anything
         else
-          logger.info [:mv, @root/@pending/File.basename(file), @root/@archive]
-          mv(@root/@pending/File.basename(file), @root/@archive)
+          logger.info [:mv, pending_file, @root/@archive]
+          mv pending_file, @root/@archive
         end
       end
     end
@@ -66,8 +90,30 @@ module Basket
       end
     end
 
+    def mixin
+      # create local definitions for closures 
+      our_baskets = baskets
+      our_root    = @root
+      our_logger  = logger
+      @mixin ||= begin 
+        movingMethods = Module.new
+        movingMethods.module_eval do
+          our_baskets.each do |basket|
+            define_method "#{basket}!" do
+              puts "calling #{basket}!"
+              our_logger.info [:mv, self, our_root/basket]
+              FileUtils.mv self, our_root/basket
+            end
+          end
+        end
+        movingMethods
+      end
+    end
+
     def baskets
-      [@inbox, @pending, @archive, @other].flatten.compact
+      baskets = [@inbox, @pending, @archive, @other]
+      baskets << ["success", "fail"] if @opts[:conditional]
+      baskets.flatten.compact
     end
 
   end
