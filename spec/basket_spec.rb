@@ -45,10 +45,9 @@ describe "Basket" do
 
   describe "basic usage"  do
     it "should process files" do
-      pending
       Dir["#{@root}/inbox/*"].size.should == 25 # check and make sure files are in the inbox
 
-      Basket.process(@root) do |file|
+      Basket.process(@root, :logdev => "/dev/null") do |file|
         p [:processing, file]
       end
 
@@ -59,10 +58,9 @@ describe "Basket" do
 
   describe "conditional usage" do
     it "should process files" do
-      pending
       Dir["#{@root}/inbox/*"].size.should == 25 # check and make sure files are in the inbox
 
-      Basket.process(@root, :conditional => true) do |file, i|
+      Basket.process(@root, :conditional => true, :logdev => "/dev/null") do |file, i|
         if i % 2 == 0
           p [:success, file]
           true 
@@ -97,10 +95,10 @@ describe "Basket" do
         end
       end
 
-      Dir["#{@root}/new/*"   ].size.should == 0 
-      Dir["#{@root}/good/*"    ].size.should == 8 
-      Dir["#{@root}/bad/*"     ].size.should == 8 
-      Dir["#{@root}/unknown/*" ].size.should == 8 
+      Dir["#{@root}/new/*"     ].size.should == 0
+      Dir["#{@root}/good/*"    ].size.should == 9
+      Dir["#{@root}/bad/*"     ].size.should == 8
+      Dir["#{@root}/unknown/*" ].size.should == 8
     end
   end
 

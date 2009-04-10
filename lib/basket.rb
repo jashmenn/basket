@@ -34,22 +34,27 @@ module Basket
     include HasLogger
     include FileUtils
 
-    # Process a directory of files. Move them to a new location. 
+    # Process a directory of files, one at a time.
+    #
+    # Take +root+ folder and look for the directory +inbox+. Each file in
+    # +inbox+ is first +mv+'d to +pending+ and then yielded to +block+. Upon
+    # completion of the block the file is +mv+'d to a directory, as specifed in
+    # the options.
     #
     # Options:
-    #  * :inbox
-    #  * :pending
-    #  * :archive
-    #  * :other
-    #  * :logdev
-    #  * :conditional
+    #  * <tt>:inbox</tt>: the name of the inbox folder (default +inbox+)
+    #  * <tt>:pending</tt>: the name of the pending folder (default +pending+)
+    #  * <tt>:archive</tt>: the name of the archive folder (default +archive+)
+    #  * <tt>:other</tt>: if +other+ is specified then the files are *not* moved to the archive or any other directory automatically. You *must* specify where the file will go or it will remain in +inbox+. incompatable with +conditional+.
+    #  * <tt>:logdev</tt>: device to log to. For example: <tt>STDOUT</tt> or <tt>"/path/to/log.log"</tt> (default: <tt>/dev/null</tt>)
+    #  * <tt>:conditional</tt>: if +conditional+ is specified then then the result of the #process block is interpreted as boolean. if the result is +true+ then the file is mv'd to +success+ otherwise it is mv'd to +fail+
     def initialize(root, opts={})
       @root = root
       @inbox   = opts.delete(:inbox)   || INBOX
       @pending = opts.delete(:pending) || PENDING
       @archive = opts.delete(:archive) || ARCHIVE
       @other   = opts.delete(:other)   || []
-      @logdev  = opts.delete(:logdev)
+      @logdev  = opts.delete(:logdev)  || "/dev/null"
       @opts    = opts
     end
 
@@ -73,7 +78,7 @@ module Basket
           destination = result ? @root/"success" : @root/"fail"
           logger.info [:mv, pending_file, destination]
           mv pending_file, destination
-        elsif @opts[:other]
+        elsif @other.size > 0
           # don't mv anything
         else
           logger.info [:mv, pending_file, @root/@archive]
@@ -90,17 +95,16 @@ module Basket
       end
     end
 
-    def mixin
-      # create local definitions for closures 
-      our_baskets = baskets
-      our_root    = @root
-      our_logger  = logger
+    # create the Module that will be mixed in to the String representing the
+    # files this allows us to define exclamation methods that will move the
+    # files to a particular directory
+    def mixin # :nodoc:
+      our_baskets, our_root, our_logger = baskets, @root, logger # create local definitions for closures 
       @mixin ||= begin 
         movingMethods = Module.new
         movingMethods.module_eval do
           our_baskets.each do |basket|
             define_method "#{basket}!" do
-              puts "calling #{basket}!"
               our_logger.info [:mv, self, our_root/basket]
               FileUtils.mv self, our_root/basket
             end
