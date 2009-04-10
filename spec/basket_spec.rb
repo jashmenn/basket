@@ -107,6 +107,15 @@ describe "Basket" do
     end
   end
 
+  describe "parallel processing with forkoff" do
+    it "should process the files" do
+      create_fixture_files("inbox", 10)
+      Basket.process(@root, :workers => 2) do |file, i|
+        log $$, :processing, file, i
+      end
+    end
+  end
+
   after(:each) do
     # cleanup_fixtures_dir
   end

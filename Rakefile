@@ -24,6 +24,7 @@ spec = Gem::Specification.new do |s|
   s.author = AUTHOR
   s.email = EMAIL
   s.homepage = HOMEPAGE
+  s.add_dependency('forkoff', '>= 0.0.1')
   
   s.require_path = 'lib'
   s.autorequire = GEM

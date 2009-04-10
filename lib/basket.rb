@@ -9,6 +9,7 @@ module Basket
   require 'ext/core'
   require 'ext/metaid'
   require 'has_logger'
+  require 'forkoff'
 
   class << self
     @logging = false
@@ -35,7 +36,7 @@ module Basket
   # == Block Arity
   # If the block takes a single argument, then a string containing the path to
   # the +pending+ file is yielded. If the block accepts two arugments then the
-  # file index is also yielded
+  # file index is also yielded. Does not work for parallel processing with forkoff.
   def self.process(input, opts={}, &block)
     b = Base.new(input, opts)
     b.process(&block)
@@ -69,7 +70,9 @@ module Basket
       create_directories 
       files = Dir[@root/@inbox/"*"]
       logger.debug(["#{files.size} files in", @root/@inbox/"*"])
-      files.each_with_index do |file, i|
+      send_args = @opts[:workers] ? [:forkoff!, {:processes => @opts[:workers]}] : [:each]
+      i = 0
+      files.send(*send_args) do |file|
         pending_file = @root/@pending/File.basename(file)
         logger.info [:mv, file, pending_file]
         mv file, pending_file
@@ -88,6 +91,7 @@ module Basket
           logger.info [:mv, pending_file, @root/@archive]
           mv pending_file, @root/@archive
         end
+        i += 1
       end
     end
 
