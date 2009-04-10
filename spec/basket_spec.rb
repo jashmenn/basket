@@ -10,7 +10,7 @@ describe "Basket" do
   describe "Basket::Base" do 
     describe "using default options" do
       before(:each) do
-        @b = Basket::Base.new(FIXTURES_DIR/"orders")
+        @b = Basket::Base.new(FIXTURES_DIR/"orders", :logdev => "/dev/null")
       end
 
       it "should have root" do

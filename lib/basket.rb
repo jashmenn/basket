@@ -7,6 +7,7 @@ module Basket
   require 'fileutils'
   require 'pp'
   require 'ext/core'
+  require 'has_logger'
 
   class << self
     @logging = false
@@ -29,12 +30,15 @@ module Basket
     attr_accessor :pending
     attr_accessor :baskets
 
+    include HasLogger
+
     def initialize(root, opts={})
       @root = root
       @inbox   = opts[:inbox]   || INBOX
       @pending = opts[:pending] || PENDING
       @archive = opts[:archive] || ARCHIVE
       @baskets = opts[:baskets] || DEFAULT_BASKETS
+      @logdev  = opts[:logdev]
     end
 
     def process(&block)
@@ -42,10 +46,8 @@ module Basket
 
     protected
     def create_directories
-      p "creating"
-      p baskets
       baskets.flatten.compact.each do |dir|
-        puts "making #{@root/dir}"
+        logger.debug([:creating, @root/dir])
         FileUtils.mkdir_p(@root/dir)
       end
     end
