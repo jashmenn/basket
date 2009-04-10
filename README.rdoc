@@ -8,7 +8,7 @@ Easily process and sort a directory of files.
     puts "we are processing #{file}"
   end
 
-Assuming there are number of files in orders/inbox 
+Assuming there are number of files in <tt>orders/inbox</tt> 
 * each file is +mv+'d to <tt>orders/pending</tt>
 * the block is called on each file
 * the file is +mv+'d to <tt>orders/archive</tt>
