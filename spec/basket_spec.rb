@@ -117,6 +117,6 @@ describe "Basket" do
   end
 
   after(:each) do
-    # cleanup_fixtures_dir
+    cleanup_fixtures_dir
   end
 end
