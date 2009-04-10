@@ -20,7 +20,7 @@ See Basket#process for a list of all the options.
 The output folder can be conditional based on the output of the block, as in
 the following example. In this case the default names of the folders are
 +success+ and +fail+ based on the return value of the block being +true+ or
-+false.
++false+.
 
   :include:examples/02_conditional.rb 
 
@@ -28,6 +28,6 @@ You can create arbitrary baskets for the output. If you specify <tt>:other</tt> 
 
   :include:examples/03_other_baskets.rb  
 
-Baskets has built-in support for doing parallel processing using <tt>forkoff</tt>. Example:
+Baskets has (experimental) built-in support for doing parallel processing using <tt>forkoff</tt>. Example:
 
   :include:examples/04_parallel.rb
