@@ -1,6 +1,33 @@
-basket
-======
+= Basket
 
-An easy way to batch process a folder of files, avoiding race conditions.
+Easily process and sort a directory of files.
 
-  :include:examples/simple01.rb
+= Example:
+
+  Basket.process("orders") do |file|
+    puts "we are processing #{file}"
+  end
+
+Assuming there are number of files in orders/inbox 
+* each file is +mv+'d to <tt>orders/pending</tt>
+* the block is called on each file
+* the file is +mv+'d to <tt>orders/archive</tt>
+
+See Basket#process for a list of all the options.
+
+= More examples:
+
+The output folder can be conditional based on the output of the block, as in
+the following example. In this case the default names of the folders are
++success+ and +fail+ based on the return value of the block being +true+ or
++false.
+
+  :include:examples/02_conditional.rb 
+
+You can create arbitrary baskets for the output. If you specify <tt>:other</tt> then the files are *not* +mv+'d automatically. You must call the appropriate bang method on the file. For example:
+
+  :include:examples/03_other_baskets.rb  
+
+Baskets has built-in support for doing parallel processing using <tt>forkoff</tt>. Example:
+
+  :include:examples/04_parallel.rb

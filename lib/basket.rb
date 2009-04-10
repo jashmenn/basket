@@ -25,12 +25,12 @@ module Basket
   # the options.
   #
   # == Options
-  #  * <tt>:inbox</tt>: the name of the inbox folder (default +inbox+)
-  #  * <tt>:pending</tt>: the name of the pending folder (default +pending+)
-  #  * <tt>:archive</tt>: the name of the archive folder (default +archive+)
-  #  * <tt>:other</tt>: if +other+ is specified then the files are *not* moved to the archive or any other directory automatically. You *must* specify where the file will go or it will remain in +inbox+. incompatable with +conditional+.
-  #  * <tt>:logdev</tt>: device to log to. For example: <tt>STDOUT</tt> or <tt>"/path/to/log.log"</tt> (default: <tt>/dev/null</tt>)
-  #  * <tt>:conditional</tt>: if +conditional+ is specified then then the result of the #process block is interpreted as boolean. if the result is +true+ then the file is mv'd to +success+ otherwise it is mv'd to +fail+
+  # * <tt>:inbox</tt>: the name of the inbox folder (default +inbox+)
+  # * <tt>:pending</tt>: the name of the pending folder (default +pending+)
+  # * <tt>:archive</tt>: the name of the archive folder (default +archive+)
+  # * <tt>:other</tt>: if +other+ is specified then the files are *not* moved to the archive or any other directory automatically. You *must* specify where the file will go or it will remain in +inbox+. incompatable with +conditional+.
+  # * <tt>:logdev</tt>: device to log to. For example: <tt>STDOUT</tt> or <tt>"/path/to/log.log"</tt> (default: <tt>/dev/null</tt>)
+  # * <tt>:conditional</tt>: if +conditional+ is specified then then the result of the #process block is interpreted as boolean. if the result is +true+ then the file is mv'd to +success+ otherwise it is mv'd to +fail+
   #
   # == Block Arity
   # If the block takes a single argument, then a string containing the path to

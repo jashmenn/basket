@@ -1,3 +1,6 @@
+$:.unshift File.dirname(__FILE__) + "/../lib"
+require 'basket'
+def log(*args); p args; end
 
 
 # want to be able to process in parallel
