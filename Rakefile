@@ -65,3 +65,8 @@ namespace :rdoc do
     system 'open ' + (:rdoc / 'index.html') if PLATFORM['darwin']
   end
 end
+
+desc "run rstakeout"
+task :rstakeout do
+  exec "AUTOTEST=true rstakeout -t 1 -v \"spec spec --format=specdoc --color\" '*/**/*.rb'"
+end
