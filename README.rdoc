@@ -26,12 +26,47 @@ the following example. In this case the default names of the folders are
 +success+ and +fail+ based on the return value of the block being +true+ or
 +false+.
 
-  :include:examples/02_conditional.rb 
+  $:.unshift File.dirname(__FILE__) + "/../lib"
+  require 'basket'
+  def log(*args); p args; end
+
+  Basket.process("orders", :conditional => true, :logdev => "/dev/null") do |file, i|
+    if i % 2 == 0
+      log :success, file
+      true # returning true mv's file to +success+
+    else
+      log :fail, file
+      false # returning false mv's file to +faile+
+    end
+  end
 
 You can create arbitrary baskets for the output. If you specify <tt>:other</tt> then the files are *not* +mv+'d automatically. You must call the appropriate bang method on the file. For example:
 
-  :include:examples/03_other_baskets.rb  
+  $:.unshift File.dirname(__FILE__) + "/../lib"
+  require 'basket'
+  def log(*args); p args; end
+
+  Basket.process("orders", :inbox => "new", :pending => "work", :other => %w{good bad unknown}) do |file, i|
+    case i % 3 
+    when 0 
+      log :good, file
+      file.good! # mv's file to "orders/good"
+    when 1
+      log :bad, file
+      file.bad!
+    when 2
+      log :unknown, file
+      file.unknown!
+    end
+  end
 
 Baskets has (experimental) built-in support for doing parallel processing using <tt>forkoff</tt>. Example:
 
-  :include:examples/04_parallel.rb
+  $:.unshift File.dirname(__FILE__) + "/../lib"
+  require 'basket'
+  def log(*args); p args; end
+
+  # want to be able to process in parallel
+  Basket.process("orders", :workers => 4) do |file|
+    log $$, :processing, file
+  end
